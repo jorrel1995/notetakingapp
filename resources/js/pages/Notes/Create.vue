@@ -1,0 +1,108 @@
+ <script setup lang="ts">
+import { Head, useForm } from '@inertiajs/vue3';
+
+import AppLayout from '@/layouts/AppLayout.vue';
+import { type BreadcrumbItem } from '@/types';
+import axios from 'axios';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Notes',
+        href: '/notes',
+    },
+    {
+        title: 'Create',
+        href: '/notes/create',
+    },
+];
+
+const form = useForm({
+    title: '',
+    content: '',
+});
+
+const submit = () => {
+    console.log('submit');
+    form.post('/notes', {
+        onSuccess: () => form.reset('title', 'content'),
+    }); 
+};
+</script>
+
+<template>
+    <Head title="Create Note" />
+
+    <AppLayout :breadcrumbs="breadcrumbs">
+        <div class="flex h-full flex-1 flex-col gap-4 p-4 md:p-6">
+            <div class="mx-auto w-full max-w-2xl">
+                <div
+                    class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
+                >
+                    <div class="mb-6">
+                        <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                            Create Note
+                        </h1>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+                            Add a new note to your collection.
+                        </p>
+                    </div>
+
+                    <form @submit.prevent="submit" class="space-y-6">
+                        <div>
+                            <label
+                                for="title"
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-200"
+                                >Title</label
+                            >
+                            <input
+                                type="text"
+                                id="title"
+                                v-model="form.title"
+                                class="block w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-400 dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
+                                placeholder="Enter note title..."
+                            />
+                            <div
+                                v-if="form.errors.title"
+                                class="mt-1 text-sm text-red-600 dark:text-red-400"
+                            >
+                                {{ form.errors.title }}
+                            </div>
+                        </div>
+
+                        <div>
+                            <label
+                                for="content"
+                                class="mb-2 block text-sm font-medium text-gray-900 dark:text-gray-200"
+                                >Content</label
+                            >
+                            <textarea
+                                id="content"
+                                v-model="form.content"
+                                rows="6"
+                                class="block w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-400 dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
+                                placeholder="Write your thoughts here..."
+                            ></textarea>
+                            <div
+                                v-if="form.errors.content"
+                                class="mt-1 text-sm text-red-600 dark:text-red-400"
+                            >
+                                {{ form.errors.content }}
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-end">
+                            <button
+                                type="submit"
+                                :disabled="form.processing"
+                                class="inline-flex w-full justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 disabled:opacity-50 sm:w-auto dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-800"
+                            >
+                                <span v-if="form.processing">Creating...</span>
+                                <span v-else>Create Note</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </AppLayout>
+</template>

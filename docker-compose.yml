@@ -1,0 +1,87 @@
+services:
+  app:
+    build:
+      context: ./services/php/
+      dockerfile: ${DOCKER_ENV:-dev}.Dockerfile
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.2}
+        - NODE_VERSION=${NODE_VERSION:-16}
+        - ELASTIC_APM_URL=${ELASTIC_APM_URL:-}
+        - ELASTIC_APM_SECRET=${ELASTIC_APM_SECRET:-}
+        - ELASTIC_APM_SERVICE_NAME=${ELASTIC_APM_SERVICE_NAME:-}
+        - ELASTIC_APM_ENV=${ELASTIC_APM_ENV:-}
+    ports:
+      - "9000:9000"
+      - "5173:5173"
+    environment:
+      - TZ=Europe/London
+    user: "${USER_ID}:${USER_ID}"
+    restart: unless-stopped
+    volumes:
+      - .:/var/www/html
+    networks:
+      - traefik
+  web:
+    build:
+      context: ./services/nginx/
+      dockerfile: ${DOCKER_ENV:-dev}.Dockerfile
+    environment:
+      - TZ=Europe/London
+    volumes:
+      - .:/var/www/html
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.${PROJECT_NAME}_https.redirectscheme.scheme=https"
+      - "traefik.http.routers.${PROJECT_NAME}.entrypoints=web"
+      - "traefik.http.routers.${PROJECT_NAME}.rule=Host(`${PROJECT_BASE_URL}`)"
+      - "traefik.http.routers.${PROJECT_NAME}_www.rule=Host(`www.${PROJECT_BASE_URL}`)"
+      - "traefik.http.routers.${PROJECT_NAME}.middlewares=${PROJECT_NAME}_https@docker"
+
+      #- "traefik.http.routers.${PROJECT_NAME}_www.middlewares=redirect-http-www@file"
+
+      - "traefik.http.routers.${PROJECT_NAME}_https.rule=Host(`${PROJECT_BASE_URL}`) || Host(`www.${PROJECT_BASE_URL}`)"
+      #- "traefik.http.routers.${PROJECT_NAME}_https.rule=Host(`${PROJECT_BASE_URL}`)"
+      - "traefik.http.routers.${PROJECT_NAME}_https.tls=true"
+      #- "traefik.http.routers.${PROJECT_NAME}_https.tls.certresolver=le"
+      - "traefik.http.routers.${PROJECT_NAME}_https.entrypoints=websecure"
+      - "traefik.http.services.${PROJECT_NAME}_https.loadbalancer.server.port=80"
+      #- "traefik.http.routers.${PROJECT_NAME}_https.middlewares=redirect-http-www@file,redirect-https-www@file"
+
+      #- "traefik.http.routers.${PROJECT_NAME}_https.middlewares=${PROJECT_NAME}_https_auth"
+      #- "traefik.http.middlewares.${PROJECT_NAME}_https_auth.basicauth.usersfile=users"
+    links:
+      - app
+    restart: unless-stopped
+    networks:
+      - traefik
+  # cron:
+  #   build:
+  #     context: ./services/cron/
+  #     dockerfile: ${DOCKER_ENV:-dev}.Dockerfile
+  #     args:
+  #       - PROJECT_BASE_URL=${PROJECT_BASE_URL:-notetakingapp.local}
+  #   environment:
+  #     - TZ=Europe/London
+  #     - BASEURL=${PROJECT_BASE_URL}
+  #   restart: unless-stopped
+  #   networks:
+  #     - traefik
+  worker:
+    build:
+      context: ./services/php/
+      dockerfile: ${DOCKER_ENV:-dev}.Dockerfile
+      args:
+        - PHP_VERSION=${PHP_VERSION:-8.3}
+        - NODE_VERSION=${NODE_VERSION:-16}
+    environment:
+      - TZ=Europe/London
+    user: "${USER_ID}:${USER_ID}"
+    restart: unless-stopped
+    command: php /var/www/html/artisan schedule:work
+    volumes:
+      - .:/var/www/html
+    networks:
+      - traefik
+networks:
+  traefik:
+    external: true
