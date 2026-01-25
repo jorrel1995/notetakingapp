@@ -20,8 +20,9 @@ defineProps<{
                     class="mr-1 mb-1 px-4 py-3 text-sm leading-4 border rounded hover:bg-white focus:border-indigo-500 focus:text-indigo-500"
                     :class="{ 'bg-blue-600 text-white hover:bg-blue-500': link.active, 'bg-white': !link.active }"
                     :href="link.url"
-                    v-html="link.label"
-                />
+                >
+                    <span v-html="link.label"></span>
+                </Link>
             </template>
         </div>
     </div>
