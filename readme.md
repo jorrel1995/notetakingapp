@@ -1,5 +1,9 @@
 This is the notetaking app created using Laravel and Vue using TailwindCSS to style the forms 
+
 Added Pagination and Search to the notes index page also. 
+Created a Database Seeder (NoteSeeder) to populate the database with sample data for the notes table.
+Created a custom NoteService class (NoteService) to handle the search and pagination of the notes.
+Created a custom Notes Request class (StoreNoteRequest) to handle the validation of the notes.
 
 It is using PHP Version 8.4 and Node Version 20
 
