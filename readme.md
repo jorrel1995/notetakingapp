@@ -1,4 +1,5 @@
 This is the notetaking app created using Laravel and Vue using TailwindCSS to style the forms 
+Added Pagination and Search to the notes index page also. 
 
 It is using PHP Version 8.4 and Node Version 20
 
