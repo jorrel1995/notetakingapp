@@ -111,5 +111,5 @@ function getSubmissionsWithFemaleTrustees()
 
 }
 
-Explanation: Use the Submission model to retrieve all submissions and filter them using the filter method. The filter method takes a callback function that takes a submission as an argument and returns a boolean value. The callback function uses the data_get function to retrieve the trustees from the answers column of the submission. The trustees are then filtered using the where method to only include trustees with a gender of 'female'. The count method is then used to count the number of trustees with a gender of 'female'. If the count is greater than or equal to 2, the submission is returned. If the count is less than 2, null is returned.
+Explanation: Use the Submission model to retrieve all submissions and filter the submissions to only include those with 2 or more female trustees. The filter method is used to filter the submissions to only include those with 2 or more female trustees. The where method is used to filter the trustees to only include those with a gender of 'female'. The count method is used to count the number of trustees with a gender of 'female'. If the count is greater than or equal to 2, the submission is returned. If the count is less than 2, null is returned.
 ```
