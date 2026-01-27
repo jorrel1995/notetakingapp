@@ -33,11 +33,15 @@ It was setup via Docker.
 3. **Initialize environment:**
    ```bash
    docker compose exec -it app bash
+   
+   # Run the following INSIDE the container:
    cp .env.example .env 
    composer install
+   npm install
    php artisan key:generate
    php artisan migrate
    php artisan storage:link
+   php artisan db:seed 
    ```
 5. **Run the application:**
    - The application will be available at [http://localhost](http://localhost).
