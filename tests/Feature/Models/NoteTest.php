@@ -47,6 +47,15 @@ class NoteTest extends TestCase
         $response->assertStatus(200);
     }
 
+    public function test_can_edit_note(): void
+    {
+        $note = Note::factory()->create();
+
+        $response = $this->get('/notes/'.$note->id.'/edit');
+
+        $response->assertStatus(200);
+    }
+
     public function test_can_update_note(): void
     {
         $note = Note::factory()->create();

@@ -100,7 +100,10 @@ watch(perPage, (value) => {
                                 <td class="py-3">{{ String(note.content).substring(0, 50) }}...</td>
                                 <td class="py-3 text-right">
                                     <button class="mr-2">
-                                        <Link :href="`/notes/${note.id}`" method="get" as="button" class="text-blue-500 hover:underline">Edit</Link>
+                                        <Link :href="`/notes/${note.id}`" method="get" as="button" class="text-blue-500 hover:underline">View</Link>
+                                    </button>
+                                    <button class="mr-2">
+                                        <Link :href="`/notes/${note.id}/edit`" method="get" as="button" class="text-blue-500 hover:underline">Edit</Link>
                                     </button>
                                     <button class="mr-2">
                                         <Link :href="`/notes/${note.id}`" method="delete" as="button" class="text-red-500 hover:underline">Delete</Link>

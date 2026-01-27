@@ -35,6 +35,15 @@ class NoteController extends Controller
     {
         $note = Note::findOrFail($id);
 
+        return Inertia::render('Notes/Show', [
+            'note' => $note,
+        ]);
+    }
+
+    public function edit($id)
+    {
+        $note = Note::findOrFail($id);
+
         return Inertia::render('Notes/Edit', [
             'note' => $note,
         ]);

@@ -20,10 +20,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         title: props.note.title,
         href: `/notes/${props.note.id}`,
     },
-    {
-        title: 'Edit',
-        href: `/notes/${props.note.id}`,
-    },
 ];
 
 const formatDate = (dateString: string) => {
@@ -33,21 +29,22 @@ const formatDate = (dateString: string) => {
     return (new Date(date.getTime() - offset)).toISOString().slice(0, 16);
 };
 
-const form = useForm({
-    title: props.note.title,
-    content: props.note.content,
-    created_at: formatDate(props.note.created_at),
-});
+const editNote = () => {
+    useForm().get(`/notes/${props.note.id}/edit`);
+}
 
-const submit = () => {
-    form.put(`/notes/${props.note.id}`, {
-        onSuccess: () => form.reset('title', 'content'),
-    });
-};
+const deleteNote = () => {
+    useForm().delete(`/notes/${props.note.id}`);
+}
+
+const backToNotes = () => {
+    useForm().get('/notes');
+}
+
 </script>
 
 <template>
-    <Head title="Edit Note" />
+    <Head title="View Note" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 p-4 md:p-6">
@@ -55,16 +52,46 @@ const submit = () => {
                 <div
                     class="rounded-xl border border-gray-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900"
                 >
-                    <div class="mb-6">
+                    <div class="mb-6 text-center">
                         <h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                            Edit Note
+                            View Note
                         </h1>
                         <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                            Update the details of your note.
+                            View the details of your note.
                         </p>
+                    <div class="flex gap-4 justify-center">
+                    <div>
+                        <button
+                            type="button"
+                            @click="editNote"
+                            class="inline-flex w-full justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 disabled:opacity-50 sm:w-auto dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-800"
+                        >
+                            <span>Edit Note</span>
+                        </button>
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            @click="deleteNote"
+                            class="inline-flex w-full justify-center rounded-lg bg-red-600 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-red-300 disabled:opacity-50 sm:w-auto dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-800"
+                        >
+                            <span>Delete Note</span>
+                        </button>
+                    </div>  
+                    <div>
+                        <button
+                            type="button"
+                            @click="backToNotes"
+                            class="inline-flex w-full justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 disabled:opacity-50 sm:w-auto dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-800"
+                        >
+                            <span>Back to Notes</span>
+                        </button>
+                    </div>
+                    </div>
                     </div>
 
-                    <form @submit.prevent="submit" class="space-y-6">
+
+                    <form class="space-y-6">
                         <div>
                             <label
                                 for="title"
@@ -74,16 +101,12 @@ const submit = () => {
                             <input
                                 type="text"
                                 id="title"
-                                v-model="form.title"
+                                :value="note.title"
+                                readonly
+                                disabled
                                 class="block w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-400 dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
                                 placeholder="Enter note title..."
                             />
-                            <div
-                                v-if="form.errors.title"
-                                class="mt-1 text-sm text-red-600 dark:text-red-400"
-                            >
-                                {{ form.errors.title }}
-                            </div>
                         </div>
 
                         <div>
@@ -94,17 +117,13 @@ const submit = () => {
                             >
                             <textarea
                                 id="content"
-                                v-model="form.content"
+                                :value="note.content"
                                 rows="6"
+                                readonly
+                                disabled
                                 class="block w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-400 dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
                                 placeholder="Write your thoughts here..."
                             ></textarea>
-                            <div
-                                v-if="form.errors.content"
-                                class="mt-1 text-sm text-red-600 dark:text-red-400"
-                            >
-                                {{ form.errors.content }}
-                            </div>
                         </div>
 
                         <div>
@@ -116,23 +135,13 @@ const submit = () => {
                             <input
                                 type="datetime-local"
                                 id="created_at"
-                                v-model="form.created_at"
+                                :value="formatDate(note.created_at)"
                                 readonly
                                 disabled
                                 class="block w-full rounded-lg border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder-neutral-400 dark:focus:border-indigo-500 dark:focus:ring-indigo-500"
                             />                            
                         </div>
 
-                        <div class="flex items-center justify-end">
-                            <button
-                                type="submit"
-                                :disabled="form.processing"
-                                class="inline-flex w-full justify-center rounded-lg bg-indigo-600 px-5 py-2.5 text-center text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-300 disabled:opacity-50 sm:w-auto dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-indigo-800"
-                            >
-                                <span v-if="form.processing">Updating...</span>
-                                <span v-else>Update Note</span>
-                            </button>
-                        </div>
                     </form>
                 </div>
             </div>
