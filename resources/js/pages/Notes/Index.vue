@@ -70,20 +70,30 @@ watch(perPage, (value) => {
         <button>
             <Link href="/notes/create" class="text-blue-500 hover:underline">Create Note</Link>
         </button>
-        <div>
-            <p v-if="$page.props.flash.success" class="text-green-500">{{ $page.props.flash.success }}</p>
-            <p v-if="$page.props.flash.error" class="text-red-500">{{ $page.props.flash.error }}</p>
+        </button>
+        
+        <div v-if="$page.props.flash.success" class="mb-4 rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-800 dark:text-green-100" role="alert">
+            <p class="font-bold">Success</p>
+            <p>{{ $page.props.flash.success }}</p>
         </div>
-        <input type="text" v-model="search" placeholder="Search notes..." class="border p-2 rounded" />
-        <select v-model="perPage" class="border p-2 rounded">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="100">100</option>
-        </select>
-             <div
-                class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border p-4"
-             >
+        <div v-if="$page.props.flash.error" class="mb-4 rounded-lg bg-red-100 p-4 text-red-700 dark:bg-red-800 dark:text-red-100" role="alert">
+            <p class="font-bold">Error</p>
+            <p>{{ $page.props.flash.error }}</p>
+        </div>
+
+        <div class="flex gap-4 mb-4">
+            <input type="text" v-model="search" placeholder="Search notes..." class="border p-2 rounded" />
+            <select v-model="perPage" class="border p-2 rounded">
+                <option value="10">10</option>
+                <option value="25">25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+            </select>
+        </div>
+
+        <div
+            class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border p-4"
+        >
                 <h1 class="text-2xl font-bold mb-4">Notes</h1>
                 <div class="mt-6 overflow-x-auto">
                     <table class="w-full text-left text-sm" v-if="notes.data.length > 0">
@@ -99,14 +109,18 @@ watch(perPage, (value) => {
                                 <td class="py-3 font-medium">{{ note.title }}</td>
                                 <td class="py-3">{{ String(note.content).substring(0, 50) }}...</td>
                                 <td class="py-3 text-right">
-                                    <button class="mr-2">
-                                        <Link :href="`/notes/${note.id}`" method="get" as="button" class="text-blue-500 hover:underline">View</Link>
+                                    <button class="mr-2 text-blue-500 hover:underline" @click="router.get(`/notes/${note.id}`)">View</button>
+                                    <button
+                                        class="mr-2 text-blue-500 hover:underline"
+                                        @click="router.get(`/notes/${note.id}/edit`)"
+                                    >
+                                        Edit
                                     </button>
-                                    <button class="mr-2">
-                                        <Link :href="`/notes/${note.id}/edit`" method="get" as="button" class="text-blue-500 hover:underline">Edit</Link>
-                                    </button>
-                                    <button class="mr-2">
-                                        <Link :href="`/notes/${note.id}`" method="delete" as="button" class="text-red-500 hover:underline">Delete</Link>
+                                    <button
+                                        class="text-red-500 hover:underline"
+                                        @click="router.delete(`/notes/${note.id}`)"
+                                    >
+                                        Delete
                                     </button>
                                 </td>
                             </tr>

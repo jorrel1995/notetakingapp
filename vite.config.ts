@@ -25,13 +25,12 @@ export default defineConfig({
         }),
     ],
     server: {
-        host: '0.0.0.0',
+        host: '0.0.0.0', // Required for Docker
+        port: 5173,
+        strictPort: true,
         cors: true,
         hmr: {
             host: 'localhost',
-        },
-        watch: {
-            usePolling: true,
         },
     },
 });

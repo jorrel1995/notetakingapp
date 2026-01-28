@@ -43,7 +43,7 @@ class AppServiceProvider extends ServiceProvider
                 ->uncompromised()
             : null
         );
-        $this->app['request']->server->set('HTTPS', true);
+        // $this->app['request']->server->set('HTTPS', true);
 
     }
 }

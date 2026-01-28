@@ -41,7 +41,9 @@ const form = useForm({
 
 const submit = () => {
     form.put(`/notes/${props.note.id}`, {
-        onSuccess: () => form.reset('title', 'content'),
+        onSuccess: () => {
+             form.reset('title', 'content');
+        },
     });
 };
 </script>
