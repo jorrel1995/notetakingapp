@@ -70,7 +70,7 @@ watch(perPage, (value) => {
         <button>
             <Link href="/notes/create" class="text-blue-500 hover:underline">Create Note</Link>
         </button>
-        </button>
+
         
         <div v-if="$page.props.flash.success" class="mb-4 rounded-lg bg-green-100 p-4 text-green-700 dark:bg-green-800 dark:text-green-100" role="alert">
             <p class="font-bold">Success</p>
