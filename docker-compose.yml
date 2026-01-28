@@ -19,8 +19,8 @@ services:
     restart: unless-stopped
     volumes:
       - .:/var/www/html
-    networks:
-      - traefik
+    # networks:
+    #   - traefik
   web:
     build:
       context: ./services/nginx/
@@ -49,23 +49,25 @@ services:
 
       #- "traefik.http.routers.${PROJECT_NAME}_https.middlewares=${PROJECT_NAME}_https_auth"
       #- "traefik.http.middlewares.${PROJECT_NAME}_https_auth.basicauth.usersfile=users"
+    ports:
+      - "80:80"
     links:
       - app
     restart: unless-stopped
-    networks:
-      - traefik
-  # cron:
-  #   build:
-  #     context: ./services/cron/
-  #     dockerfile: ${DOCKER_ENV:-dev}.Dockerfile
-  #     args:
-  #       - PROJECT_BASE_URL=${PROJECT_BASE_URL:-notetakingapp.local}
-  #   environment:
-  #     - TZ=Europe/London
-  #     - BASEURL=${PROJECT_BASE_URL}
-  #   restart: unless-stopped
-  #   networks:
-  #     - traefik
+    # networks:
+    #   - traefik
+    # cron:
+    #   build:
+    #     context: ./services/cron/
+    #     dockerfile: ${DOCKER_ENV:-dev}.Dockerfile
+    #     args:
+    #       - PROJECT_BASE_URL=${PROJECT_BASE_URL:-notetakingapp.local}
+    #   environment:
+    #     - TZ=Europe/London
+    #     - BASEURL=${PROJECT_BASE_URL}
+    #   restart: unless-stopped
+    #   networks:
+    #     - traefik
   worker:
     build:
       context: ./services/php/
@@ -80,8 +82,8 @@ services:
     command: php /var/www/html/artisan schedule:work
     volumes:
       - .:/var/www/html
-    networks:
-      - traefik
-networks:
-  traefik:
-    external: true
+    # networks:
+    #   - traefik
+    # networks:
+    #   traefik:
+    #     external: true

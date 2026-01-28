@@ -13,7 +13,7 @@ Example:
 PROJECT_NAME=notetakingapp
 PHP_VERSION=8.4
 NODE_VERSION=20
-PROJECT_BASE_URL=notetakingapp.local #change this to your local domain
+PROJECT_BASE_URL=notetakingapp.local
 DOCKER_ENV=dev #change this to dev or prod
 USER_ID=1001 #change this to your user id
 
