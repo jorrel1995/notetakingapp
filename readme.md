@@ -35,6 +35,13 @@ It was setup via Docker.
    
    # Run the following INSIDE the container:
    cp .env.example .env 
+   
+   # Setup SQLite Database
+   touch database/database.sqlite
+   sed -i 's|# DB_DATABASE=laravel|DB_DATABASE=/var/www/html/database/database.sqlite|' .env
+   sed -i 's|DB_CONNECTION=sqlite|# DB_CONNECTION=sqlite\nDB_CONNECTION=sqlite|' .env 
+   # Ensure DB_CONNECTION is sqlite
+   
    composer install
    npm install
    php artisan key:generate
